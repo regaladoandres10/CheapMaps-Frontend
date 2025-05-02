@@ -3,13 +3,37 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
 import { Searchbar } from 'react-native-paper'
 import {ProductoItem} from './components/ProductoItem.js'
-import { ScrollView } from 'react-native-web';
+import { ScrollView } from 'react-native-web'
+import axios from 'axios'
 
 export default function App() {
 
   const [searchQuery, setSearchQuery] = useState('')
+
   //mostrar/ocultar resultados
   const [mostrarResultados, setMostrarResultados] = useState(false)
+
+  const [producto, setProducto] = useState([])
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    //Cambiar la IP cuando cambie de dispositivo
+    axios.get("http://172.20.10.2:8000/api/productos/")
+    .then((Response) => {
+      //Me devuelve el JSON con todos los productos
+      setProducto(Response.data)
+      setLoading(false)
+      //Los muestro en consola
+      console.log("Los productos son", producto)
+    }
+  )
+    
+    //Muestra el error en caso de que no haya encontrado la URL
+    .catch((err) => {
+      console.log(err)
+      setLoading(false)
+    } )
+  }, [])
 
   useEffect(() => {
     //El codigo que quiero que corra
@@ -20,21 +44,11 @@ export default function App() {
 
   function handleSearchSubmit() {
     setMostrarResultados(true)
-    console.log("motrar", mostrarResultados) 
+    console.log("mostrar", mostrarResultados) 
   }
 
 
-  //Productos
-
-  const productos = [
-    {id: 1, nombre: 'Leche', ubicacion: 'Tienda la Soledad', precio: 20.00, imagen: 'https://i5.walmartimages.com.mx/gr/images/product-images/img_large/00750649501422L.jpg'},
-    {id: 2, nombre: 'Coca cola', ubicacion: 'Tienda la Joya', precio: 15.00, imagen: 'https://static.vecteezy.com/system/resources/previews/037/751/381/non_2x/coca-cola-plastic-bottle-isolated-on-transparent-background-free-png.png'},
-    {id: 3, nombre: 'Doritos', ubicacion: 'Tienda la Dalia', precio: 15.00, imagen: 'https://w7.pngwing.com/pngs/391/563/png-transparent-nachos-cheese-fries-doritos-tortilla-chip-corn-chip-corn-chip-food-cheese-snack-thumbnail.png'},
-    {id: 4, nombre: 'Cafe', ubicacion: 'Tienda Raul Ramirez', precio: 30.00, imagen: 'https://c0.klipartz.com/pngpicture/272/17/sticker-png-instant-coffee-tea-nescafe-cappuccino-coffee-food-tea-coffee-ristretto-caffeine-thumbnail.png'},
-    {id: 5, nombre: 'Papel de baño', ubicacion: 'Tienda Tecnlogico', precio: 5.00, imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLX4j7aY6sy1-gPJq5MlMk09tuBd7yNdL1Yg&s'},
-  ]
-
-  let buscarProductos = mostrarResultados ? productos.filter( (producto) => producto.nombre.toLowerCase().includes(searchQuery.toLowerCase())) : []
+  let buscarProductos = mostrarResultados ? producto.filter( (p) => p.nombre.toLowerCase().includes(searchQuery.toLowerCase())) : []
   
   return (
         <View style={mostrarResultados ? styles.contentResult : styles.content}>
@@ -67,13 +81,6 @@ export default function App() {
                 style = {{width: '100%'}}
               />
           )}
-          {/* Recorre la lista de productos */}
-
-
-
-          {/* Componente de cada producto 
-        
-          */}
         </View>
   );
 }
@@ -101,7 +108,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
     alignItems: 'center',
-    paddingLeft: 15,
+    //paddingLeft: 15,
   },
   titleResult: {
     marginTop: 40,

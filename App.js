@@ -16,15 +16,15 @@ export default function App() {
   const [producto, setProducto] = useState([])
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+   useEffect(() => {
     //Cambiar la IP cuando cambie de dispositivo
-    axios.get("http://172.20.10.2:8000/api/productos/")
+    axios.get("http://192.168.1.68:8000/api/productos/")
     .then((Response) => {
       //Me devuelve el JSON con todos los productos
       setProducto(Response.data)
       setLoading(false)
       //Los muestro en consola
-      console.log("Los productos son", producto)
+      
     }
   )
     
@@ -39,8 +39,9 @@ export default function App() {
     //El codigo que quiero que corra
     console.log(searchQuery)
     console.log(mostrarResultados)
+    console.log("Los productos son", buscarProductos)
     //opcional return
-  },[searchQuery, mostrarResultados])//El arreglo de dependencia
+  },[searchQuery, mostrarResultados, buscarProductos])//El arreglo de dependencia
 
   function handleSearchSubmit() {
     setMostrarResultados(true)
@@ -55,7 +56,7 @@ export default function App() {
           <Text style={mostrarResultados ? styles.titleResult : styles.title}> Cheap Maps </Text>
           {/* Colocando el buscador */}
           <Searchbar
-            placeholder = 'Buscar producto...'
+            placeholder = 'Buscar producto'
             onChangeText = {setSearchQuery}
             value = {searchQuery}
             style = { mostrarResultados ? styles.searchResult : styles.search}
@@ -75,7 +76,7 @@ export default function App() {
                     nombre = {item.nombre}
                     ubicacion = {item.ubicacion}
                     precio = {item.precio}
-                    //imagen={item.imagen}
+                    imagen={item.imagen_url}
                   />
                 ) }
                 style = {{width: '100%'}}

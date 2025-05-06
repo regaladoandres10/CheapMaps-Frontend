@@ -7,10 +7,19 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "hostType": "lan",
+    "lanType": "ipv4",
+    "host": "192.168.1.68",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "expo": {
+    "tunnelOptions": {
+      "subdomain": "cheapmaps-tunel",
+      "authtoken": "2whoTqm2NTIpGjOFBYYY6GLi1gC_43jyzWB75q5wXwnRrmBtX"
+      }
     },
     "ios": {
       "supportsTablet": true

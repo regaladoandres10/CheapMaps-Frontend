@@ -1,12 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { Searchbar } from 'react-native-paper'
-import {ProductoItem} from './components/ProductoItem.js'
-import { ScrollView } from 'react-native-web'
+import ProductoItem from './components/ProductoItem.js'
+
 import axios from 'axios'
 
-export default function App() {
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import MapView from 'react-native-maps';
+
+const Stack = createNativeStackNavigator();
+
+const App = () => {
+  
+  return(
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen 
+          component={Main} 
+          name="Buscador" 
+          options={{headerShown:false}}
+        />
+        <Stack.Screen 
+          component={Home} 
+          name="Home" 
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+
+  );
+}
+
+const Main = ({navigation}) => {
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -77,6 +104,7 @@ export default function App() {
                     ubicacion = {item.ubicacion}
                     precio = {item.precio}
                     imagen={item.imagen_url}
+                    navigation={navigation}
                   />
                 ) }
                 style = {{width: '100%'}}
@@ -122,6 +150,29 @@ const styles = StyleSheet.create({
   searchResult: {
     width: '95%',
     marginBottom: 10,
+  },
+  map: {
+    width: '80%',
+    height: '50%',
+  },
+  containerMap: {
+    flex: 1, 
+    justifyContent:'center', 
+    alignItems:'center', 
+    backgroundColor: '#fff'
   }
 
 });
+
+//Componente del mapa
+
+const Home = () => {
+  return (
+    <View style={styles.containerMap}>
+        <Text> Mapa </Text>
+        <MapView style={styles.map} />
+    </View>
+  );
+}
+
+export default App;

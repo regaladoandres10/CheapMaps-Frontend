@@ -3,7 +3,7 @@ import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 
- const ProductoItem = ({nombre, ubicacion, precio, imagen, navigation}) => {
+ const ProductoItem = ({nombre, ubicacion, precio, imagen, navigation, tienda}) => {
 
     const onPress = () => {
       navigation.navigate('Home')
@@ -16,8 +16,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
                 <Text style={style.text}> {nombre} </Text>
                 <Text style={style.text}> {ubicacion} </Text>
                 <Text style={style.text}> ${precio} </Text>
+                <Text style={style.text}> {tienda}  </Text>
                 <TouchableOpacity style={style.buttonMap} onPress={onPress}>
-                  <FontAwesome name="map-marker" size={24} color="black" />
+                  <FontAwesome name="map-marker" size={24} color="white" />
                 </TouchableOpacity>
                 {/* - Calificacion: con sus respectivo puntaje 
                     - Boton de ubicacion
@@ -46,7 +47,7 @@ const style = StyleSheet.create({
         height:50,
       },
       buttonMap: {
-        backgroundColor: '#fff'
+        //backgroundColor: '#fff'
       }
 });
 

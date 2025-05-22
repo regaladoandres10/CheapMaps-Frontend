@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput, Alert } from 'react-native';
 import { Searchbar } from 'react-native-paper'
 import ProductoItem from './components/ProductoItem.js'
 
@@ -10,6 +10,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import MapView from 'react-native-maps';
+
+//Importar la configuracion de la API
+import config from './config.js'
 
 const Stack = createNativeStackNavigator();
 
@@ -44,37 +47,52 @@ const Main = ({navigation}) => {
   const [loading, setLoading] = useState(true);
 
    useEffect(() => {
-    //Cambiar la IP cuando cambie de dispositivo
-    axios.get("http://192.168.1.68:8000/api/productos/")
-    .then((Response) => {
-      //Me devuelve el JSON con todos los productos
-      setProducto(Response.data)
-      setLoading(false)
-      //Los muestro en consola
+    axios.get(`${config.api.baseUrl}/api/productos/`)
+    .then((response) => {
+      //console.log("Respuesta completa:", response); // Verifica toda la respuesta
+      console.log("Datos recibidos:", response.data); // Verifica específicamente los datos
       
-    }
-  )
-    
-    //Muestra el error en caso de que no haya encontrado la URL
+      if (response.data && response.data.length > 0) {
+        setProducto(response.data);
+      } else {
+        console.warn("La API respondió pero no hay datos");
+      }
+      setLoading(false);
+    })
     .catch((err) => {
-      console.log(err)
-      setLoading(false)
-    } )
-  }, [])
+      console.error("Error en la solicitud:", err);
+      setLoading(false);
+    });
+}, []);
 
   useEffect(() => {
     //El codigo que quiero que corra
     console.log(searchQuery)
     console.log(mostrarResultados)
     console.log("Los productos son", buscarProductos)
+
     //opcional return
   },[searchQuery, mostrarResultados, buscarProductos])//El arreglo de dependencia
 
   function handleSearchSubmit() {
-    setMostrarResultados(true)
-    console.log("mostrar", mostrarResultados) 
-  }
+    
+    //console.log("Data", producto)
+    
+    //Validaciones
 
+    //Validando busqueda vacia
+    if(!searchQuery.trim()) {
+      Alert.alert("Error", "Por favor ingresa un producto", [ { text: "OK", onPress: () => console.log("OK pressed") } ]);
+      setMostrarResultados(false)
+      return;
+    }
+
+    //Validar caracteres especiales
+
+    //const resultados = buscarProductos(searchQuery)
+    setMostrarResultados(true)
+ 
+  }
 
   let buscarProductos = mostrarResultados ? producto.filter( (p) => p.nombre.toLowerCase().includes(searchQuery.toLowerCase())) : []
   
@@ -94,15 +112,16 @@ const Main = ({navigation}) => {
           {buscarProductos.length > 0 && ( 
               <FlatList 
                 //Le pasamos el arreglo
-                data= {buscarProductos}
+                data= {mostrarResultados ? buscarProductos : producto}
                 //El id de cada elemento
                 keyExtractor={item => item.id}
                 //Mostramos el componente de productoItem
                 renderItem={({item}) => (
                   <ProductoItem 
                     nombre = {item.nombre}
-                    ubicacion = {item.ubicacion}
-                    precio = {item.precio}
+                    ubicacion = {item.precios[0]?.tienda?.direccion || 'Direccion no disponible'}
+                    precio = {item.precios[0]?.precio}
+                    tienda = {item.precios[0]?.tienda?.nombre}
                     imagen={item.imagen_url}
                     navigation={navigation}
                   />
@@ -160,7 +179,10 @@ const styles = StyleSheet.create({
     justifyContent:'center', 
     alignItems:'center', 
     backgroundColor: '#fff'
-  }
+  },
+  textInput: {
+    padding: 10,
+  },
 
 });
 

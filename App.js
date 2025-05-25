@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { StyleSheet, Text, View, FlatList, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput, Alert, ScrollView } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Searchbar } from 'react-native-paper'
 import ProductoItem from './components/ProductoItem.js'
 
@@ -9,10 +10,11 @@ import axios from 'axios'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 
 //Importar la configuracion de la API
 import config from './config.js'
+//import { ScrollView } from 'react-native-web';
 
 const Stack = createNativeStackNavigator();
 
@@ -82,7 +84,11 @@ const Main = ({navigation}) => {
 
     //Validando busqueda vacia
     if(!searchQuery.trim()) {
-      Alert.alert("Error", "Por favor ingresa un producto", [ { text: "OK", onPress: () => console.log("OK pressed") } ]);
+      Alert.alert(
+        "Error", "Por favor ingresa un producto", 
+        [ { text: "OK", 
+          onPress: () => console.log("OK pressed") 
+        } ]);
       setMostrarResultados(false)
       return;
     }
@@ -101,6 +107,8 @@ const Main = ({navigation}) => {
           <Text style={mostrarResultados ? styles.titleResult : styles.title}> Cheap Maps </Text>
           {/* Colocando el buscador */}
           <Searchbar
+            //Validando el campo de busqueda
+            maxLength={50}
             placeholder = 'Buscar producto'
             onChangeText = {setSearchQuery}
             value = {searchQuery}
@@ -176,12 +184,22 @@ const styles = StyleSheet.create({
   },
   containerMap: {
     flex: 1, 
-    justifyContent:'center', 
+    //justifyContent:'center', 
     alignItems:'center', 
     backgroundColor: '#fff'
   },
   textInput: {
-    padding: 10,
+    //position: 'absolute', //Para fijarlo en la pantalla
+    top: 10,
+    width: '80%',
+    backgroundColor: '#fff',
+    paddingTop:10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 50,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
 
 });
@@ -190,9 +208,53 @@ const styles = StyleSheet.create({
 
 const Home = () => {
   return (
-    <View style={styles.containerMap}>
-        <Text> Mapa </Text>
+    /*<ScrollView style={styles.containerMap}>
+      <Text> Tu ubicacion es esta </Text>
         <MapView style={styles.map} />
+        <TextInput 
+          minLength={10}
+          maxLength={100}
+          editable
+          multiline
+          numberOfLines={4}
+          style={styles.textInput}
+          placeholder='Escribe tu reseña aquí...'
+        />
+    </ScrollView>*/
+    
+    <View style={styles.containerMap}>
+      <Text> Tu ubicacion es esta </Text>
+        {/* 
+          Modificar la latitudeDelta y longitudeDelta
+          - 0.001 Vista muy cercana
+          - 0.005 Mostrar un barrio o punto de interes.
+          - 0.05 Mostrar ciudades pequeñas o zona amplia
+          - 0.5 vista muy lejana
+        */}
+        <MapView style={styles.map} 
+          initialRegion={{
+            latitude: 20.1355,    
+            longitude: -101.1823,
+            latitudeDelta: 0.0019, //Zoom  
+            longitudeDelta: 0.0019,
+          }}
+        >
+          <Marker
+            coordinate={{ latitude: 20.1355, longitude: -101.1823 }}
+            //20.135503377595736, -101.18239708412416
+            title="Bodega Aurrera"
+          /> 
+        </MapView>
+        {/* Colocando el TextArea  */}
+        <TextInput 
+          minLength={10}
+          maxLength={100}
+          editable
+          //multiline
+          numberOfLines={4}
+          style={styles.textInput}
+          placeholder='Escribe tu reseña aquí...'
+        />
     </View>
   );
 }

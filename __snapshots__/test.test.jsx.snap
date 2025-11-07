@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`first should first 1`] = `
+<div>
+  <input
+    maxlength="50"
+    placeholder="Buscar producto"
+  />
+</div>
+`;

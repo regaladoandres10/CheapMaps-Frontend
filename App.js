@@ -13,17 +13,13 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Searchbar } from "react-native-paper";
 import ProductoItem from "./components/ProductoItem.js";
-
 import axios from "axios";
-
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import MapView, { Marker } from "react-native-maps";
 
 //Importar la configuracion de la API
 import config from "./config.js";
-//import { ScrollView } from 'react-native-web';
 
 const Stack = createNativeStackNavigator();
 
@@ -92,8 +88,6 @@ const Main = ({ navigation }) => {
   function handleSearchSubmit() {
     const searchQueryTrimmed = searchQuery.trim();
 
-    //console.log("Data", producto)
-
     //Validaciones
 
     //Validando busqueda vacia
@@ -143,7 +137,7 @@ const Main = ({ navigation }) => {
     : [];
 
   return (
-    <View style={mostrarResultados ? styles.contentResult : styles.content}>
+    <View style={styles.mostrarResultados ? styles.contentResult : styles.content}>
       <Text style={mostrarResultados ? styles.titleResult : styles.title}>
         {" "}
         Cheap Maps{" "}
@@ -156,7 +150,7 @@ const Main = ({ navigation }) => {
         placeholder="Buscar producto"
         onChangeText={setSearchQuery}
         value={searchQuery}
-        style={mostrarResultados ? styles.searchResult : styles.search}
+        style={styles.mostrarResultados ? styles.searchResult : styles.search}
         //hacer la programacion que haga que se muestren los resultados
         onSubmitEditing={handleSearchSubmit}
       />

@@ -1,18 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TextInput,
-  Alert,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet,Text,View,FlatList,TextInput,Alert,
+TouchableOpacity,} from "react-native";
+
 import { Searchbar } from "react-native-paper";
-import ProductoItem from "./components/ProductoItem.js";
+import ProductoItem from "./src/components/ProductoItem.js";
 import axios from "axios";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
